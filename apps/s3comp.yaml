@@ -44,9 +44,6 @@ spec:
         spec:
           forProvider:
             bucket: default
-            bucketSelector:
-              matchLabels:
-                testing.upbound.io/example-name: s3
             policy: >
               {
                   "Version": "2012-10-17",
@@ -97,7 +94,7 @@ spec:
                   "Version": "2012-10-17",
                   "Statement": [
                     {
-                      "sid": "ForceSSLAccess",
+                      "Sid": "ForceSSLAccess",
                       "Effect": "Deny",
                       "Principal": "*",
                       "Action": "*",
