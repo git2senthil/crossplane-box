@@ -7,8 +7,7 @@ spec:
     apiVersion: api.example.org/v1alpha1
     kind: strgcompute
   resources:
-    - name: s3bucket
-      base:
+    - base:
         apiVersion: s3.aws.upbound.io/v1beta1
         kind: Bucket
         metadata:
@@ -32,7 +31,7 @@ spec:
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.name"
           toFieldPath: "metadata.name"
-      base:
+    - base:
         apiVersion: s3.aws.upbound.io/v1beta1
         kind: BucketPolicy
         metadata:
@@ -93,7 +92,7 @@ spec:
             strategy: string
             # This policy restricts unecnrypted uploads and enfore SSL
             string:
-              fmt: |
+              fmt: >
                 {
                   "Version": "2012-10-17",
                   "Statement": [
@@ -118,7 +117,7 @@ spec:
                       "Action": "s3:PutObject",
                       "Resource": [
                         "arn:aws:s3:::%s/*"
-                      ]
+                      ],
                       "Condition": {
                           "StringNotEquals": {
                               "s3:x-amz-server-side-encryption": "aws:kms"
@@ -132,7 +131,7 @@ spec:
                       "Action": "s3:PutObject",
                       "Resource": [
                         "arn:aws:s3:::%s/*"
-                      ]
+                      ],
                       "Condition": {
                           "Null": {
                               "s3:x-amz-server-side-encryption": "true"
