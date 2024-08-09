@@ -1,0 +1,356 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: storage
+spec:
+  compositeTypeRef:
+    apiVersion: api.example.org/v1alpha1
+    kind: strg
+  resources:
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: Bucket
+        metadata:
+          annotations:
+            argocd.argoproj.io/tracking-id: 'bootstrap:s3.aws.upbound.io/Bucket:argocd/'
+          name: crossplane-bucket-sentgitjul
+        spec:
+          forProvider:
+            region: us-east-1
+          providerConfigRef:
+            name: default
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketPolicy
+        metadata:
+          annotations:
+            meta.upbound.io/example-id: s3/v1beta1/bucketpolicy
+            upjet.upbound.io/manual-intervention: The bucket ARN in policy should be changed manually.
+          labels:
+            testing.upbound.io/example-name: example
+          name: default
+        spec:
+          forProvider:
+            bucket: default
+            policy: >
+              {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                        "Sid": "VisualEditor0",
+                        "Effect": "Allow",
+                        "Principal": "*",
+                        "Action": ["s3:GetObject",  "s3:ListBucket"],
+                        "Resource": [ "arn:aws:s3:::<bucket name>", "arn:aws:s3:::<bucket name>/*"]
+                    }
+                  ]
+                }
+            region: us-east-1
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-bucket-policy"      
+        - type: CombineFromComposite
+          toFieldPath: "spec.forProvider.policy"
+          policy:
+            fromFieldPath: Required
+          combine:
+            variables:
+              - fromFieldPath: spec.name
+              - fromFieldPath: spec.name
+              - fromFieldPath: spec.name
+            strategy: string
+            # This policy restricts unecnrypted uploads and enfore SSL
+            string:
+              fmt: >
+                {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "ForceSSLAccess",
+                      "Effect": "Deny",
+                      "Principal": "*",
+                      "Action": "*",
+                      "Resource": [
+                        "arn:aws:s3:::%s/*"
+                      ],
+                      "Condition": {
+                          "Bool": {
+                           "aws:SecureTransport": "false"
+                          }
+                      }
+                    },
+                    {
+                      "Sid": "DenyUnEncryptedObjectUploads",
+                      "Effect": "Deny",
+                      "Principal": "*",
+                      "Action": "s3:PutObject",
+                      "Resource": [
+                        "arn:aws:s3:::%s/*"
+                      ],
+                      "Condition": {
+                          "StringNotEquals": {
+                              "s3:x-amz-server-side-encryption": "aws:kms"
+                            }
+                      }
+                    },
+                    {
+                      "Sid": "DenyUnEncryptedObjectUploads",
+                      "Effect": "Deny",
+                      "Principal": "*",
+                      "Action": "s3:PutObject",
+                      "Resource": [
+                        "arn:aws:s3:::%s/*"
+                      ],
+                      "Condition": {
+                          "Null": {
+                              "s3:x-amz-server-side-encryption": "true"
+                            }
+                      }
+                    }
+                  ]
+                }
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketOwnershipControls
+        metadata:
+          name: example
+        spec:
+          forProvider:
+            bucket: default
+            region: us-west-1
+            rule:
+              - objectOwnership: BucketOwnerPreferred 
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string: 
+              fmt: "%s-bucket-ownership"  
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.objectownership"
+          toFieldPath: "spec.forProvider.rule.objectOwnership"
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketVersioning
+        metadata:
+          name: example
+        spec:
+          forProvider:
+            bucket: default
+            region: us-west-1
+            versioningConfiguration:
+              - status: Disabled 
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string: 
+              fmt: "%s-bucket-versioning"  
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.versioning"
+          toFieldPath: "spec.forProvider.versioningConfiguration.status"
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketPublicAccessBlock
+        metadata:
+          name: example
+        spec:
+          forProvider:
+            bucket: default
+            region: us-west-1
+            blockPublicAcls: false
+            blockPublicPolicy: false
+            ignorePublicAcls: false
+            restrictPublicBuckets: false
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string: 
+              fmt: "%s-bucket-public-access-ctrl"  
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.blockPublicAcls"
+          toFieldPath: "spec.forProvider.blockPublicAcls"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.blockPublicPolicy"
+          toFieldPath: "spec.forProvider.blockPublicPolicy"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.ignorePublicAcls"
+          toFieldPath: "spec.forProvider.ignorePublicAcls"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.restrictPublicBuckets"
+          toFieldPath: "spec.forProvider.restrictPublicBuckets"
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketObjectLockConfiguration
+        metadata:
+          name: example
+        spec:
+          forProvider:
+            bucket: default
+            region: us-west-1
+            objectLockEnabled: Enabled
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string: 
+              fmt: "%s-bucket-object-lck"  
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.objectLockEnabled"
+          toFieldPath: "spec.forProvider.objectLockEnabled"
+    - base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: BucketLifecycleConfiguration
+        metadata:
+          name: example
+        spec:
+          forProvider:
+            bucket: default
+            region: us-west-1
+            rule: >
+              {
+                    'Expiration': {
+                        'Days': expiration
+                    },
+                    'ID': id_rule_1,
+                    'Filter': {
+                        'Prefix': folder_path
+                    },
+                    'Status': 'Enabled'
+                }                
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.region"
+          transforms:
+            - type: map
+              map: 
+                EU: "eu-north-1"
+                US: "us-east-2"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "spec.forProvider.bucket"
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.name"
+          toFieldPath: "metadata.name"
+          transforms:
+          - type: string
+            string: 
+              fmt: "%s-bucket-lc-config"  
+        - type: FromCompositeFieldPath
+          fromFieldPath: "spec.lifecyclerules"
+          toFieldPath: "spec.forProvider.rule"
+          transforms:
+          - type: convert
+            convert:
+            toType: array
+            format: json
+
+    # - name: compute
+    #   base:
+    #     apiVersion: ec2.aws.upbound.io/v1beta1
+    #     kind: Instance
+    #     metadata:
+    #       annotations:
+    #         argocd.argoproj.io/tracking-id: 'bootstrap:ec2.aws.upbound.io/Instance:argocd/'
+    #       labels:
+    #         testing.upbound.io/example-name: instance
+    #       name: instance
+    #       #namespace: argocd
+    #     spec:
+    #       forProvider:
+    #         ami: ami-0e06fa29a08d84162
+    #         instanceType: t2.micro
+    #         region: us-east-1
+    #         tags:
+    #           type: upbound-test-instance
+    #   patches:
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: "spec.location"
+    #       toFieldPath: "spec.forProvider.region"
+    #       transforms:
+    #         - type: map
+    #           map: 
+    #             EU: "eu-north-1"
+    #             US: "us-east-2"

@@ -1,0 +1,67 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: strg.api.example.org
+spec:
+  group: api.example.org
+  names:
+    kind: strg
+    plural: strgs
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              location:
+                type: string
+                oneOf:
+                  - pattern: '^EU$'
+                  - pattern: '^US$'
+              name:
+                type: string
+              acl:
+                default: private
+                type: string
+              objectownership:
+                default: ObjectWriter
+                type: string
+                enum:
+                - BucketOwnerPreferred 
+                - ObjectWriter
+                - BucketOwnerEnforced
+              versioning:
+                type: string
+                default: Disabled
+                enum:
+                - Enabled 
+                - Suspended
+                - Disabled    
+              blockPublicAcls:
+                default: true
+                type: boolean
+              blockPublicPolicy:
+                default: true
+                type: boolean
+              ignorePublicAcls:
+                default: true
+                type: boolean
+              restrictPublicBuckets:
+                default: true
+                type: boolean
+              objectLockEnabled:
+                default: false
+                type: boolean
+              lifecyclerules:
+                type: json             
+            required:
+              - location
+              - name
+    served: true
+    referenceable: true
+  claimNames:
+    kind: custom-strg
+    plural: custom-strgs
