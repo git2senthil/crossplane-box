@@ -56,7 +56,7 @@ spec:
                 default: false
                 type: boolean
               lifecyclerules:
-                type: object
+                type: string
                  # properties:
                   #  json:
                     #  x-kubernetes-preserve-unknown-fields: true     
