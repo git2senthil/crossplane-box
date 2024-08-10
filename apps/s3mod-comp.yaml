@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: storage
+  name: s3strg
 spec:
   compositeTypeRef:
     apiVersion: api.example.org/v1alpha1
