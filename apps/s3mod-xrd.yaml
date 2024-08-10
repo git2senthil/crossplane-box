@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: strg.api.example.org
+  name: strgs.api.example.org
 spec:
   group: api.example.org
   names:
@@ -56,7 +56,7 @@ spec:
                 default: false
                 type: boolean
               lifecyclerules:
-                type: json             
+                type: array             
             required:
               - location
               - name
