@@ -319,7 +319,7 @@ spec:
             string: 
               fmt: "%s-bucket-lc-config"  
         - type: FromCompositeFieldPath
-          fromFieldPath: "spec.lifecyclerules"
+          fromFieldPath: "spec.lcrules"
           toFieldPath: "spec.forProvider.rule"
           transforms:
           - type: convert
