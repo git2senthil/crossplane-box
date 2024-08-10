@@ -324,8 +324,8 @@ spec:
           transforms:
           - type: convert
             convert:
-            toType: array
-            format: string
+              toType: array
+              format: string
 
     # - name: compute
     #   base:
