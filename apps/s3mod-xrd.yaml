@@ -55,10 +55,11 @@ spec:
               objectLockEnabled:
                 default: false
                 type: boolean
-                  type: object
-                    properties:
-                      lifecyclerules:
-                        x-kubernetes-preserve-unknown-fields: true          
+              lifecyclerules:
+                type: object
+                  properties:
+                    json:
+                      x-kubernetes-preserve-unknown-fields: true     
             required:
               - location
               - name
