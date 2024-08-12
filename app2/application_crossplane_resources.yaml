@@ -1,10 +1,10 @@
-apiVersion: api.example.org/v1alpha1
- kind: strg
- metadata:
-   name: strg-app2
- spec: 
-   location: "US"
-   name: strg-app21
+# apiVersion: api.example.org/v1alpha1
+#  kind: strg
+#  metadata:
+#    name: strg-app2
+#  spec: 
+#    location: "US"
+#    name: strg-app21
 # ---
 # apiVersion: api.example.org/v1alpha1
 # kind: strgcompute
