@@ -7,7 +7,7 @@ spec:
   name: strg-app21
   versioning: Enabled
   lcrules: >    
-              {
+             [ {
                     'Expiration': {
                         'Days': 90
                     },
@@ -27,6 +27,7 @@ spec:
                     },
                     'Status': 'Enabled'
                 }
+                ]
 # ---
 # apiVersion: api.example.org/v1alpha1
 # kind: strgcompute
