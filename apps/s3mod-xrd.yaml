@@ -64,7 +64,7 @@ spec:
               - location
               - name
             lcrules:
-              type: object
+              type: string
               properties:
                 json:
                    x-kubernetes-preserve-unknown-fields: true 
