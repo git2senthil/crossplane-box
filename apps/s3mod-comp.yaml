@@ -320,7 +320,7 @@ spec:
               fmt: "%s-bucket-lc-config"  
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.lcrules"
-          toFieldPath: "spec.forProvider.rule[0]"
+          toFieldPath: "spec.forProvider.rule[]"
           transforms:
           - type: convert
             convert:
