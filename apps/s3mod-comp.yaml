@@ -202,7 +202,7 @@ spec:
               fmt: "%s-bucket-versioning"  
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.versioning"
-          toFieldPath: "spec.forProvider.versioningConfiguration.status"
+          toFieldPath: "spec.forProvider.versioningConfiguration[0].status"
     - base:
         apiVersion: s3.aws.upbound.io/v1beta1
         kind: BucketPublicAccessBlock
@@ -256,7 +256,7 @@ spec:
           forProvider:
             bucket: default
             region: us-west-1
-            objectLockEnabled: Enabled
+            objectLockEnabled: true
       patches:
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.location"
@@ -320,7 +320,7 @@ spec:
               fmt: "%s-bucket-lc-config"  
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.lcrules"
-          toFieldPath: "spec.forProvider.rule"
+          toFieldPath: "spec.forProvider.rule[0]"
           transforms:
           - type: convert
             convert:
