@@ -288,18 +288,18 @@ spec:
           forProvider:
             bucket: default
             region: us-west-1
-            rule: []
-            # >
-            #   {
-            #         'Expiration': {
-            #             'Days': expiration
-            #         },
-            #         'ID': id_rule_1,
-            #         'Filter': {
-            #             'Prefix': folder_path
-            #         },
-            #         'Status': 'Enabled'
-            #     }                
+            rule: [
+              {
+                   'Expiration': {
+                       'Days': expiration
+                   },
+                   'ID': id_rule_1,
+                   'Filter': {
+                       'Prefix': folder_path
+                   },
+                   'Status': 'Enabled'
+               }   
+               ]
       patches:
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.location"
