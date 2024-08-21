@@ -288,7 +288,7 @@ spec:
           forProvider:
             bucket: default
             region: us-west-1
-            rule: [
+            rules: [
                            {
                     'Expiration': {
                         'Days': 90
