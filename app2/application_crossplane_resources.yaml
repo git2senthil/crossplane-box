@@ -6,28 +6,28 @@ spec:
   location: "US"
   name: strg-app21
   versioning: Enabled
-  # lcrules: >  [  
-  #             {
-  #                   'Expiration': {
-  #                       'Days': 90
-  #                   },
-  #                   'ID': id_rule_1,
-  #                   'Filter': {
-  #                       'Prefix': /tmp
-  #                   },
-  #                   'Status': 'Enabled'
-  #               },
-  #               {
-  #                   'Expiration': {
-  #                       'Days': 90
-  #                   },
-  #                   'ID': id_rule_2,
-  #                   'Filter': {
-  #                       'Prefix': /tmp1
-  #                   },
-  #                   'Status': 'Enabled'
-  #               } 
-  #               ]
+  lcrules: >  [  
+              {
+                    'Expiration': {
+                        'Days': 90
+                    },
+                    'ID': id_rule_1,
+                    'Filter': {
+                        'Prefix': /tmp
+                    },
+                    'Status': 'Enabled'
+                },
+                {
+                    'Expiration': {
+                        'Days': 90
+                    },
+                    'ID': id_rule_2,
+                    'Filter': {
+                        'Prefix': /tmp1
+                    },
+                    'Status': 'Enabled'
+                } 
+                ]
 # ---
 # apiVersion: api.example.org/v1alpha1
 # kind: strgcompute
