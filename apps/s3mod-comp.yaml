@@ -289,16 +289,26 @@ spec:
             bucket: default
             region: us-west-1
             rule: [
-              {
-                   'Expiration': {
-                       'Days': expiration
-                   },
-                   'ID': id_rule_1,
-                   'Filter': {
-                       'Prefix': folder_path
-                   },
-                   'Status': 'Enabled'
-               }   
+                           {
+                    'Expiration': {
+                        'Days': 90
+                    },
+                    'ID': id_rule_1,
+                    'Filter': {
+                        'Prefix': /tmp
+                    },
+                    'Status': 'Enabled'
+                },
+                {
+                    'Expiration': {
+                        'Days': 90
+                    },
+                    'ID': id_rule_2,
+                    'Filter': {
+                        'Prefix': /tmp1
+                    },
+                    'Status': 'Enabled'
+                }  
                ]
       patches:
         - type: FromCompositeFieldPath
@@ -319,14 +329,14 @@ spec:
           - type: string
             string: 
               fmt: "%s-bucket-lc-config"  
-        - type: FromCompositeFieldPath
-          fromFieldPath: "spec.lcrules"
-          toFieldPath: "spec.forProvider.rule[]"
-          transforms:
-          - type: convert
-            convert:
-              toType: array
-              format: json
+        # - type: FromCompositeFieldPath
+        #   fromFieldPath: "spec.lcrules"
+        #   toFieldPath: "spec.forProvider.rule[]"
+        #   transforms:
+        #   - type: convert
+        #     convert:
+        #       toType: array
+        #       format: json
 
     # - name: compute
     #   base:
