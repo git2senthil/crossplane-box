@@ -65,9 +65,8 @@ spec:
               - name
             lcrules:
               type: object
-              properties:
-                json:
-                   x-kubernetes-preserve-unknown-fields: true 
+              additionalProperties:
+                type: string
     served: true
     referenceable: true
   claimNames:
