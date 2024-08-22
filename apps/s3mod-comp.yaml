@@ -288,7 +288,7 @@ spec:
           forProvider:
             bucket: default
             region: us-west-1
-            rules: [
+            rules: >
                            {
                     'Expiration': {
                         'Days': 90
@@ -309,7 +309,6 @@ spec:
                     },
                     'Status': 'Enabled'
                 }  
-               ]
       patches:
         - type: FromCompositeFieldPath
           fromFieldPath: "spec.location"
